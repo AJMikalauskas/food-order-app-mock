@@ -1,30 +1,18 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import styles from "./Header.module.css";
 import HeaderCartButton from "./HeaderCartButton";
 import mealsImg from "../img/meals.jpg";
 import ShoppingCartModal from "../Cart-Items/Modal";
+import CartContext from "../Cart-Items/Cart-Context/cart-context";
 
 const Header = (props) => {
-
-  
-  const [shoppingCartShowing, showShoppingCart] = useState(false);
-  const [shoppingCartJSXShowing, showShoppingCartJSX] = useState();
-
-  const showShoppingCartModal = () => {
-      showShoppingCartJSX(<ShoppingCartModal onClose={stopShowingCartModal}/>);
-      showShoppingCart(true);
-  }
-
-  const stopShowingCartModal = () =>
-  {
-    showShoppingCart(false);
-  }
+  const cartCtx = useContext(CartContext);
   return (
     <Fragment>
-      {shoppingCartShowing === true && shoppingCartJSXShowing}
+      {cartCtx.showModal === true && cartCtx.shoppingCartShowingJSXTest}
       <header className={styles.header}>
         <h1>Xander's Kitchen</h1>
-        <HeaderCartButton onClick={showShoppingCartModal} />
+        <HeaderCartButton  />
         {/* <button>Cart</button> */}
       </header>
       <div className={styles["main-image"]}>
