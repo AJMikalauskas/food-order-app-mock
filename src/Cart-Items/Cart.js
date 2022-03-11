@@ -5,18 +5,18 @@ import CartContext from "./Cart-Context/cart-context";
 import MealToCartContext from "../Context/Meal-To-Cart-Context";
 
 const Cart = (props) => {
-  const onRemoveCartItem = (id) => {};
-
-  const onAddCartItem = (item) => {};
-
-  const placeOrder = () => {
-    console.log("Ordering...");
-  };
-
   const cartCtx = useContext(CartContext);
   const mealToCartCtx = useContext(MealToCartContext);
   const totalAmount = `$${mealToCartCtx.totalAmount.toFixed(2)}`;
   const hasItems = mealToCartCtx.items.length > 0;
+
+  const onRemoveCartItem = (id) => {
+    mealToCartCtx.removeItem(id);
+  };
+
+  const onAddCartItem = (item) => {
+    mealToCartCtx.addItem(item);
+  };
 
   const cartItems = (
     <ul className={`${styles["cart-items"]}`}>
@@ -39,6 +39,9 @@ const Cart = (props) => {
     </ul>
   );
 
+  const placeOrder = () => {
+    console.log("Ordering...");
+  };
   return (
     <div>
         {cartItems}

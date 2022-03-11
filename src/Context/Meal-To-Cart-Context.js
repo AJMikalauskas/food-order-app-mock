@@ -14,6 +14,7 @@ const defaultCartState = {
 
 const itemsReducer = (state, action) => {
   if (action.type === "ADD_ITEM") {
+    
     // console.log(action.item.price);
     // //const stringConvertPrice = `$${action.item.price.toFixed(2)}`;
     // console.log(state.items[0]);
@@ -52,9 +53,12 @@ const itemsReducer = (state, action) => {
     // }
     // This is the value that will never change
 
+    console.log((22.99 + 16.50).toFixed(2));
     const updatedTotalAmount =
       state.totalAmount + action.item.price * action.item.amount;
-    //const updatedItems = state.items.concat(action.item);
+     const roundedTotalAmt = updatedTotalAmount.toFixed(2);
+     console.log(roundedTotalAmt);
+      //const updatedItems = state.items.concat(action.item);
     // // findIndex() just finds the index in the items array in which the copy of the action.item.id is found
     //     // this for instance would be 0 if I pressed add for sushi 2x
     const existingCartItemIndex = state.items.findIndex(
@@ -96,12 +100,52 @@ const itemsReducer = (state, action) => {
     //const updatedItems = state.items.concat(action.item);
     return {
       items: updatedItems,
-      totalAmount: updatedTotalAmount,
+      totalAmount: Number(roundedTotalAmt),
     };
   }
 
-  if (action.type === "REMOVE_ITEM") {
+  if (action.type === "REMOVE_ITEM") 
+  {
+      console.log(state.items);
+      let removingCartItemIndex = state.items.findIndex((item) => 
+          item.id === action.id
+      )
+     console.log(removingCartItemIndex);
+
+        // This will store the items but remove one amount from the specified item
+        let subtractedItemFromArr;
+        // This is the item in which the amount will go down by 1
+    const removingOneAmtFromThisItem = state.items[removingCartItemIndex];
+        // This is the total amount with the subtraction of the removed item amt price above 
+    const subtractItemFromTotalAmount = Number((state.totalAmount - removingOneAmtFromThisItem.price).toFixed(2));
+    
+    const updatedItemAfterRemovingAmt = 
+    {
+        ...removingOneAmtFromThisItem,
+        amount: removingOneAmtFromThisItem.amount - 1
+    }
+
+    // Set empty let value to the state(previous) of the items
+    subtractedItemFromArr  = [...state.items];
+    //subtractedItemFromArr[removingCartItemIndex] = updatedItemAfterRemovingAmt;
+    //const removedCartItemAmt = subtractedItemFromArr[removingCartItemIndex].amount - 1; 
+    //subtractedItemFromArr[removingCartItemIndex].amount = removedCartItemAmt; 
+    if(updatedItemAfterRemovingAmt.amount === 0)
+    {
+        subtractedItemFromArr.splice(removingCartItemIndex,1)
+        console.log(subtractedItemFromArr);
+    }
+    else
+    {
+        subtractedItemFromArr[removingCartItemIndex] = updatedItemAfterRemovingAmt;
+    }
+
+    return {
+        items: subtractedItemFromArr,
+        totalAmount: subtractItemFromTotalAmount
+    }
   }
+  
   return defaultCartState;
 };
 
@@ -120,7 +164,9 @@ export const MealToCartContextProvider = (props) => {
     dispatchItems({ type: "ADD_ITEM", item: item });
   };
 
-  const removeItemFromCartHandler = (id) => {};
+  const removeItemFromCartHandler = (id) => {
+      dispatchItems({ type:"REMOVE_ITEM", id: id})
+  };
 
   return (
     <MealToCartContext.Provider
