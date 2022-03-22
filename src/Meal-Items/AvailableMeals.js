@@ -54,9 +54,9 @@ const AvailableMeals = (props) => {
   console.log(mealsFromFirebaseDB);
   setApiData(mealsFromFirebaseDB);
     }
-    catch(error)
+    catch(err)
     {
-      setError(error.message);
+      setError(err.message);
     }
     // Stop Loading state once data is shown via this end statement
     setLoading(false);
