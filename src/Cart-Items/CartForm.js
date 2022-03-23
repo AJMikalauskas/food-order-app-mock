@@ -4,6 +4,11 @@ import styles from "./CartForm.module.css";
 import MealToCartContext from "../Context/Meal-To-Cart-Context";
 
 const CartForm = (props) => {
+    // Add Better USer Feedback so cart and form say successfully submitted and cart items are removed once submit is successful
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    props.loadingState(isSubmitting);
+    const [submitData, setSubmitData] = useState(false);
+    props.onSubmitValidForm(submitData);
     // Overall Form Validity State based on all states
     const [formIsValid, setFormIsValid] = useState(false);
     const mealToCartCtx = useContext(MealToCartContext);
@@ -71,6 +76,9 @@ const CartForm = (props) => {
     //     return cartItems;
     // }
     const postOrderData = async() => {
+        // Send Up Loading STate ot the cart.js so it will show loading for a small amount of time
+        //setIsSubmitting(true);
+        //props.loadingState(isSubmitting);
         const orderData = await fetch("https://food-ordering-app-db-b3d2e-default-rtdb.firebaseio.com/userOrderData.json",
         {
           method:'POST',
@@ -85,12 +93,17 @@ const CartForm = (props) => {
             "ZipCode": postalCodeInputValue,
             "City": cityInputValue
             },
-            // No need for object wrap around this
+            // No need for object wrap around this -> no need to even use a function to get the cart items, 
+                // could've done it but simpler this way
             orderInfo: mealToCartCtx.items
           })
         });
         const data = await orderData.json();
         console.log(data);
+        setIsSubmitting(true);
+        props.loadingState(isSubmitting);
+        setSubmitData(true);
+        props.onSubmitValidForm(true);
         }
 
     

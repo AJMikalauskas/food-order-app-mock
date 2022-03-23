@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import ReactDOM from 'react-dom'
 import Cart from "./Cart";
 import styles from "./Modal.module.css";
-
+//import MealToCartContext from "../Context/Meal-To-Cart-Context";
+import CartContext from "./Cart-Context/cart-context";
 const Backdrop = (props) =>
 {
-    return <div className={styles.backdrop} ></div>
+    const cartCtx = useContext(CartContext);
+    return <div className={styles.backdrop} onClick={cartCtx.stopShowingCartModalTest}></div>
 }
 
 const Modal = (props) =>

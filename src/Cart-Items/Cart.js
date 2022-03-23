@@ -45,14 +45,33 @@ const Cart = (props) => {
     console.log("Ordering...");
     setShowCartForm(true);
   };
-  return (
-    <div>
-        {cartItems}
+
+  const [successfulSubmitFormData, setSuccessfulSubmitFormData] = useState(false);
+  const submitOrderAndFormData = (boolData) =>
+  {
+    if(boolData === true)
+    {
+      // delete modal with form and cart items ---> show thanks for ordering message 
+      setSuccessfulSubmitFormData(boolData);
+    }
+  };
+
+   const[loadingStateOfPOST,setLoadingStateOfPOST]= useState(false);
+  const loadingOrderPostFn = (loadingStateVal) =>
+  {
+    setLoadingStateOfPOST(loadingStateVal);
+  }
+
+  const showFormAndCartItems =
+  <React.Fragment>
+    {cartItems}
+      <div className={styles.actions}>
+                {/* Create a conditional showing of an item form */}
+                {showCartForm && <CartForm loadingState={loadingOrderPostFn} onSubmitValidForm={submitOrderAndFormData}  onCancel={cartCtx.stopShowingCartModalTest}/>}
       <div className={styles.total}>
         <span>Total Amount </span>
         <span>{totalAmount}</span>
       </div>
-      <div className={styles.actions}>
         <button
           className={`${styles["button--alt"]}`}
           onClick={cartCtx.stopShowingCartModalTest}
@@ -62,10 +81,15 @@ const Cart = (props) => {
         {hasItems && <button className={styles.button} onClick={placeOrder}>
           Order
         </button>}
-
-        {/* Create a conditional showing of an item form */}
-        {showCartForm && <CartForm/>}
       </div>
+  </React.Fragment>;
+
+  console.log(successfulSubmitFormData);
+  return (
+    <div>
+      { !loadingStateOfPOST && !successfulSubmitFormData && showFormAndCartItems}
+      { loadingStateOfPOST && !successfulSubmitFormData && <p>Sending Order Data...</p>}
+      { successfulSubmitFormData && <p>Order Has Been Sent Successfully</p>}
     </div>
   );
 };
