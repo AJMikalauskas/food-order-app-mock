@@ -1,10 +1,12 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import CartItem from "./CartItem";
 import styles from "./Cart.module.css";
 import CartContext from "./Cart-Context/cart-context";
 import MealToCartContext from "../Context/Meal-To-Cart-Context";
+import CartForm from "./CartForm";
 
 const Cart = (props) => {
+  const [showCartForm, setShowCartForm] = useState(false);
   const cartCtx = useContext(CartContext);
   const mealToCartCtx = useContext(MealToCartContext);
   const totalAmount = `$${mealToCartCtx.totalAmount.toFixed(2)}`;
@@ -41,6 +43,7 @@ const Cart = (props) => {
 
   const placeOrder = () => {
     console.log("Ordering...");
+    setShowCartForm(true);
   };
   return (
     <div>
@@ -59,6 +62,9 @@ const Cart = (props) => {
         {hasItems && <button className={styles.button} onClick={placeOrder}>
           Order
         </button>}
+
+        {/* Create a conditional showing of an item form */}
+        {showCartForm && <CartForm/>}
       </div>
     </div>
   );
