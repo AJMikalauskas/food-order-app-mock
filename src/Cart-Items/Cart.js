@@ -12,6 +12,10 @@ const Cart = (props) => {
   const totalAmount = `$${mealToCartCtx.totalAmount.toFixed(2)}`;
   const hasItems = mealToCartCtx.items.length > 0;
 
+  // Better User Feedback for when form is submitted to DB
+  const [isSubmitting,setIsSubmitting] = useState(false);
+  const [submitValidForm, setSubmitValidForm] = useState(false);
+
   const onRemoveCartItem = (id) => {
     mealToCartCtx.removeItem(id);
   };
@@ -49,6 +53,7 @@ const Cart = (props) => {
   //He moved the post request to this page and better user feedback too
   const submitOrderHandler = async(userData) => 
   {
+    setIsSubmitting(true);
       await fetch("https://food-ordering-app-db-b3d2e-default-rtdb.firebaseio.com/userOrderData.json",
       {
         method:'POST',
@@ -75,7 +80,10 @@ const Cart = (props) => {
       // props.loadingState(isSubmitting);
       // setSubmitData(true);
       // props.onSubmitValidForm(true);
-      }
+      setIsSubmitting(false);
+      setSubmitValidForm(true);
+      mealToCartCtx.clearCart();
+  }
 
   //}
 
@@ -97,12 +105,7 @@ const Cart = (props) => {
 
   const showFormAndCartItems =
   <React.Fragment>
-  </React.Fragment>;
-
-  //console.log(successfulSubmitFormData);
-  return (
-    <div>
-          {cartItems}
+     {cartItems}
       <div className={styles.actions}>
                 {/* Create a conditional showing of an item form */}
                 {showCartForm && <CartForm onConfirm={submitOrderHandler} onCancel={cartCtx.stopShowingCartModalTest}/>}
@@ -120,6 +123,14 @@ const Cart = (props) => {
           Order
         </button>}
       </div>
+  </React.Fragment>;
+
+  //console.log(successfulSubmitFormData);
+  return (
+    <div>
+         {!isSubmitting && !submitValidForm && showFormAndCartItems}
+         {isSubmitting && !submitValidForm && <p>Submitting Order...</p>}
+         {submitValidForm && <p>Order Successfully Sent!</p>}
       {/* { !loadingStateOfPOST && !successfulSubmitFormData && showFormAndCartItems}
       { loadingStateOfPOST && !successfulSubmitFormData && <p>Sending Order Data...</p>}
       { successfulSubmitFormData && <p>Order Has Been Sent Successfully</p>} */}

@@ -5,6 +5,7 @@ const MealToCartContext = React.createContext({
   totalAmount: 0,
   addItem: () => {},
   removeItem: () => {},
+  clearCart: () => {}
 });
 
 const defaultCartState = {
@@ -145,6 +146,11 @@ const itemsReducer = (state, action) => {
         totalAmount: subtractItemFromTotalAmount
     }
   }
+
+  if (action.type === "CLEAR_CART_ITEMS") 
+  {
+    return defaultCartState;
+  }
   
   return defaultCartState;
 };
@@ -168,6 +174,11 @@ export const MealToCartContextProvider = (props) => {
       dispatchItems({ type:"REMOVE_ITEM", id: id})
   };
 
+  const clearCartHandler = () =>
+  {
+    dispatchItems({type:"CLEAR_CART_ITEMS"});
+  }
+
   return (
     <MealToCartContext.Provider
       value={{
@@ -175,6 +186,7 @@ export const MealToCartContextProvider = (props) => {
         totalAmount: itemsState.totalAmount,
         addItem: addItemToCartHandler,
         removeItem: removeItemFromCartHandler,
+        clearCart: clearCartHandler
       }}
     >
       {props.children}
