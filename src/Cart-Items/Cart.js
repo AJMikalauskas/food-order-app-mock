@@ -46,28 +46,66 @@ const Cart = (props) => {
     setShowCartForm(true);
   };
 
-  const [successfulSubmitFormData, setSuccessfulSubmitFormData] = useState(false);
-  const submitOrderAndFormData = (boolData) =>
+  //He moved the post request to this page and better user feedback too
+  const submitOrderHandler = async(userData) => 
   {
-    if(boolData === true)
-    {
-      // delete modal with form and cart items ---> show thanks for ordering message 
-      setSuccessfulSubmitFormData(boolData);
-    }
-  };
+      await fetch("https://food-ordering-app-db-b3d2e-default-rtdb.firebaseio.com/userOrderData.json",
+      {
+        method:'POST',
+        headers: {
+          'Content-Type':
+            'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({
+          // user: {
+          // "Name": nameInputValue,
+          // "Street": streetInputValue,
+          // "ZipCode": postalCodeInputValue,
+          // "City": cityInputValue
+          // },
+          user : userData,
+          // No need for object wrap around this -> no need to even use a function to get the cart items, 
+              // could've done it but simpler this way
+          orderInfo: mealToCartCtx.items
+        })
+      });
+      // const data = await orderData.json();
+      // console.log(data);
+      // setIsSubmitting(true);
+      // props.loadingState(isSubmitting);
+      // setSubmitData(true);
+      // props.onSubmitValidForm(true);
+      }
 
-   const[loadingStateOfPOST,setLoadingStateOfPOST]= useState(false);
-  const loadingOrderPostFn = (loadingStateVal) =>
-  {
-    setLoadingStateOfPOST(loadingStateVal);
-  }
+  //}
+
+  // const [successfulSubmitFormData, setSuccessfulSubmitFormData] = useState(false);
+  // const submitOrderAndFormData = (boolData) =>
+  // {
+  //   if(boolData === true)
+  //   {
+  //     // delete modal with form and cart items ---> show thanks for ordering message 
+  //     setSuccessfulSubmitFormData(boolData);
+  //   }
+  // };
+
+  //  const[loadingStateOfPOST,setLoadingStateOfPOST]= useState(false);
+  // const loadingOrderPostFn = (loadingStateVal) =>
+  // {
+  //   setLoadingStateOfPOST(loadingStateVal);
+  // }
 
   const showFormAndCartItems =
   <React.Fragment>
-    {cartItems}
+  </React.Fragment>;
+
+  //console.log(successfulSubmitFormData);
+  return (
+    <div>
+          {cartItems}
       <div className={styles.actions}>
                 {/* Create a conditional showing of an item form */}
-                {showCartForm && <CartForm loadingState={loadingOrderPostFn} onSubmitValidForm={submitOrderAndFormData}  onCancel={cartCtx.stopShowingCartModalTest}/>}
+                {showCartForm && <CartForm onConfirm={submitOrderHandler} onCancel={cartCtx.stopShowingCartModalTest}/>}
       <div className={styles.total}>
         <span>Total Amount </span>
         <span>{totalAmount}</span>
@@ -82,14 +120,9 @@ const Cart = (props) => {
           Order
         </button>}
       </div>
-  </React.Fragment>;
-
-  console.log(successfulSubmitFormData);
-  return (
-    <div>
-      { !loadingStateOfPOST && !successfulSubmitFormData && showFormAndCartItems}
+      {/* { !loadingStateOfPOST && !successfulSubmitFormData && showFormAndCartItems}
       { loadingStateOfPOST && !successfulSubmitFormData && <p>Sending Order Data...</p>}
-      { successfulSubmitFormData && <p>Order Has Been Sent Successfully</p>}
+      { successfulSubmitFormData && <p>Order Has Been Sent Successfully</p>} */}
     </div>
   );
 };

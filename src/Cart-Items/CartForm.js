@@ -5,10 +5,10 @@ import MealToCartContext from "../Context/Meal-To-Cart-Context";
 
 const CartForm = (props) => {
     // Add Better USer Feedback so cart and form say successfully submitted and cart items are removed once submit is successful
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    props.loadingState(isSubmitting);
-    const [submitData, setSubmitData] = useState(false);
-    props.onSubmitValidForm(submitData);
+    //const [isSubmitting, setIsSubmitting] = useState(false);
+    //props.loadingState(isSubmitting);
+    //const [submitData, setSubmitData] = useState(false);
+    //props.onSubmitValidForm(submitData);
     // Overall Form Validity State based on all states
     const [formIsValid, setFormIsValid] = useState(false);
     const mealToCartCtx = useContext(MealToCartContext);
@@ -75,36 +75,36 @@ const CartForm = (props) => {
     //     }
     //     return cartItems;
     // }
-    const postOrderData = async() => {
-        // Send Up Loading STate ot the cart.js so it will show loading for a small amount of time
-        //setIsSubmitting(true);
-        //props.loadingState(isSubmitting);
-        const orderData = await fetch("https://food-ordering-app-db-b3d2e-default-rtdb.firebaseio.com/userOrderData.json",
-        {
-          method:'POST',
-          headers: {
-            'Content-Type':
-              'application/json;charset=utf-8'
-          },
-          body: JSON.stringify({
-            user: {
-            "Name": nameInputValue,
-            "Street": streetInputValue,
-            "ZipCode": postalCodeInputValue,
-            "City": cityInputValue
-            },
-            // No need for object wrap around this -> no need to even use a function to get the cart items, 
-                // could've done it but simpler this way
-            orderInfo: mealToCartCtx.items
-          })
-        });
-        const data = await orderData.json();
-        console.log(data);
-        setIsSubmitting(true);
-        props.loadingState(isSubmitting);
-        setSubmitData(true);
-        props.onSubmitValidForm(true);
-        }
+    // const postOrderData = async() => {
+    //     // Send Up Loading STate ot the cart.js so it will show loading for a small amount of time
+    //     //setIsSubmitting(true);
+    //     //props.loadingState(isSubmitting);
+    //     const orderData = await fetch("https://food-ordering-app-db-b3d2e-default-rtdb.firebaseio.com/userOrderData.json",
+    //     {
+    //       method:'POST',
+    //       headers: {
+    //         'Content-Type':
+    //           'application/json;charset=utf-8'
+    //       },
+    //       body: JSON.stringify({
+    //         user: {
+    //         "Name": nameInputValue,
+    //         "Street": streetInputValue,
+    //         "ZipCode": postalCodeInputValue,
+    //         "City": cityInputValue
+    //         },
+    //         // No need for object wrap around this -> no need to even use a function to get the cart items, 
+    //             // could've done it but simpler this way
+    //         orderInfo: mealToCartCtx.items
+    //       })
+    //     });
+    //     const data = await orderData.json();
+    //     console.log(data);
+    //     setIsSubmitting(true);
+    //     props.loadingState(isSubmitting);
+    //     setSubmitData(true);
+    //     props.onSubmitValidForm(true);
+    //     }
 
     
         // Use Custom Input Hook
@@ -136,7 +136,16 @@ const CartForm = (props) => {
   // const [apiData, setApiData] = useState([]);
 
     //This is the POST request to just get the data to the google firebase DB - need to call, cannot just put function inside this submitForm Data Fn
-    postOrderData();
+    //postOrderData();
+
+    // He instead sends up data from this via props to Cart.js 
+        // Sends as object with userdata which is only one call to make rather than 4, 1 object
+    props.onConfirm({
+        name: nameInputValue,
+        street: streetInputValue,
+        zipcode: postalCodeInputValue,
+        city: cityInputValue
+    })
 
     resetNameValueAndFocus();
     resetStreetValueAndFocus();
